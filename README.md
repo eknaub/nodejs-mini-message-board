@@ -1,6 +1,6 @@
 # Node.js Mini Message Board
 
-This project is a simple message board application built using Node.js and Express. It allows users to post and view messages.
+This project is a simple message board application built using Node.js and Express. It allows users to post, view, and delete messages.
 
 ## Project Structure
 
@@ -12,7 +12,7 @@ nodejs-mini-message-board
 │   │   ├── controllers
 │   │   │   └── messageController.js  # Controller for message-related logic
 │   │   └── models
-│   │       └── messages.js           # In-memory message storage and operations
+│   │       └── messages.js           # Database operations for messages
 │   ├── errors
 │   │   └── CustomNotFoundError.js    # Custom error class for 404 errors
 │   ├── public
@@ -48,6 +48,22 @@ nodejs-mini-message-board
    ```bash
    npm install
    ```
+4. Set up the PostgreSQL database:
+   - Create a PostgreSQL database (e.g., `Messages`).
+   - Update the `.env` file with your database credentials:
+     ```env
+     DATABASE_URL=postgresql://<username>:<password>@<host>:<port>/<database>
+     ```
+5. Create the `messages` table in your PostgreSQL database:
+   ```sql
+   CREATE TABLE IF NOT EXISTS public.messages
+   (
+       author text NOT NULL,
+       text text NOT NULL,
+       added timestamp with time zone NOT NULL,
+       id integer NOT NULL GENERATED ALWAYS AS IDENTITY ( INCREMENT 1 START 1 MINVALUE 1 MAXVALUE 2147483647 CACHE 1 )
+   );
+   ```
 
 ## Usage
 
@@ -66,17 +82,12 @@ The application will be running on `http://localhost:3000`.
 - `GET /message` - Retrieve all messages as JSON.
 - `GET /message/new` - Render the form for creating a new message.
 - `POST /message/new` - Submit a new message and redirect to the home page.
+- `DELETE /message` - Delete all messages and return the updated list of messages.
+- `DELETE /message/:id` - Delete a specific message by its ID and return the updated list of messages.
 
 ### Home
 
 - `GET /` - Render the home page with a list of messages.
-
-## Features
-
-- **Message Board**: Users can view and post messages.
-- **Dynamic Rendering**: Uses EJS templates for dynamic HTML rendering.
-- **Error Handling**: Includes middleware for handling errors gracefully.
-- **In-Memory Storage**: Messages are stored in memory for simplicity.
 
 ## License
 
