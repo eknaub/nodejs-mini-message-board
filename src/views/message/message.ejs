@@ -12,18 +12,70 @@
     </div>
   </form>
 
+  <% if (messages.length > 0) { %>
+  <button
+    class="btn btn-danger mb-4"
+    id="remove-all"
+    onclick="removeAllMessages(event)"
+  >
+    Remove All
+  </button>
+  <% } %>
+
   <ul class="list-group">
     <% messages.forEach((message) => { %>
     <li class="list-group-item">
       <div class="d-flex justify-content-between align-items-start">
         <div>
-          <strong><%= message.user %>:</strong> <%= message.text %> <br />
+          <strong><%= message.author %>:</strong> <%= message.text %> <br />
           <small class="text-muted"
             >Added on: <%= message.added.toLocaleString() %></small
           >
         </div>
+        <button
+          class="btn btn-danger btn-sm"
+          onclick="removeMessage(event, '<%= message.id %>')"
+        >
+          Remove
+        </button>
       </div>
     </li>
     <% }); %>
   </ul>
 </div>
+
+<script>
+  function removeMessage(event, messageId) {
+    event.preventDefault();
+    fetch(`/message/${messageId}`, {
+      method: "DELETE",
+    })
+      .then((response) => {
+        if (response.ok) {
+          location.reload();
+        } else {
+          alert("Failed to remove message with ID: " + messageId);
+        }
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+      });
+  }
+
+  function removeAllMessages(event) {
+    event.preventDefault();
+    fetch("/message", {
+      method: "DELETE",
+    })
+      .then((response) => {
+        if (response.ok) {
+          location.reload();
+        } else {
+          alert("Failed to remove all messages");
+        }
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+      });
+  }
+</script>

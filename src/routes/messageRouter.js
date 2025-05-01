@@ -2,6 +2,8 @@ const { Router } = require("express");
 const {
   getAllMessages,
   addNewMessage,
+  deleteAllMessages,
+  deleteMessageById,
   validateMessage,
 } = require("../db/controllers/messageController.js");
 
@@ -14,5 +16,7 @@ messageRouter.get("/new", (req, res) => {
   });
 });
 messageRouter.post("/new", validateMessage, addNewMessage);
+messageRouter.delete("/", deleteAllMessages);
+messageRouter.delete("/:id", deleteMessageById);
 
 module.exports = messageRouter;
